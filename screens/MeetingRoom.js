@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, Text, Alert, SafeAreaView } from 'react-native';
-import { View } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, Text, Alert, SafeAreaView } from 'react-native';
 import { io } from "socket.io-client"
 import StartMeeting from '../components/StartMeeting';
 import { Camera, CameraType } from 'expo-camera';
@@ -11,9 +10,11 @@ function MeetingRoom() {
     const [socket, setSocket] = useState();
     const [activeUsers, setActiveUsers] = useState();
     const [startCamera, setStartCamera] = useState(false);
+    const [type, setType] = useState(CameraType.front);
+
     useEffect(() => {
-        const _socket = io("link-");
-        setSocket(_socket);
+        // const _socket = io("link-");
+        // setSocket(_socket);
         // _socket.on("all-users", users => {
         //     console.log("Active users");
         //     setActiveUsers(users);
@@ -21,7 +22,8 @@ function MeetingRoom() {
     }, [])
 
     const __startCamera = async () => {
-        const { status } = await Camera.requestPermissionsAsync();
+        const { status } = await Camera.requestCameraPermissionsAsync();
+        console.log(status);
         if (status == "granted") {
             setStartCamera(true);
         } else {
@@ -32,22 +34,17 @@ function MeetingRoom() {
 
     const joinRoom = () => {
         __startCamera();
-        socket.emit('join-room', { roomId: roomId, userName: name });
+        //socket.emit('join-room', { roomId: roomId, userName: name });
     }
     return (
         <View style={styles.container}>
             {startCamera ? (
-                <SafeAreaView>
-                    <Camera type={"front"}
-                        style={{ width: "100%", height: 600 }}></Camera>
-                    <View style={styles.menu}>
-                        <TouchableOpacity>
-                            <FontAwesome name={"microphone"}
-                                size={24} />
-                        </TouchableOpacity>
-                    </View>
+                <>
+                    <Camera type={CameraType.front} style={{ width: "100%", height: 600 }} >
+                    </Camera>
+                    <View>hello</View>
+                </>
 
-                </SafeAreaView>
             ) : (
 
                 <StartMeeting

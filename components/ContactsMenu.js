@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
+import AntDesign from "react-native-vector-icons/AntDesign"
 const ContactsMenuButtons = [
     {
         type: "starred",
@@ -8,17 +9,17 @@ const ContactsMenuButtons = [
     {
         type: "contact",
         name: "Jessy The",
-        photo: require("")
+        photo: require("../assets/girl_1.jpg")
     },
     {
         type: "contact",
         name: "Nazarizy She",
-        photo: require("")
+        photo: require("../assets/girl_2.jpg")
     },
     {
         type: "contact",
         name: "Rafelf",
-        photo: require("")
+        photo: require("../assets/girl_3.jpg")
     },
 ]
 function ContactsMenu() {
@@ -33,7 +34,7 @@ function ContactsMenu() {
                     {/*image */}
                     {contact.type == "starred" ? (
                         <View style={styles.starredIcon}>
-                            <AntDesgin name="star" size={30} color="#efefef" />
+                            <AntDesign name="star" size={30} color="#efefef" />
                         </View>) :
                         (
                             <Image source={contact.photo} style={styles.image} />

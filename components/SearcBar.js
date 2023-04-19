@@ -4,7 +4,7 @@ import Fontisto from "react-native-vector-icons/Fontisto"
 function SearcBar() {
     return (
         <View style={styles.container}>
-            <Fontisto name="search" size={20} color={"858585"} />
+            <Fontisto name="search" size={20} color={"#858585"} />
             <Text style={styles.textSearchBar}>Searc bar</Text>
         </View>
     )
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     textSearchBar: {
-        color: "858585",
+        color: "#858585",
         paddingLeft: 10,
         fontSize: 20
     }

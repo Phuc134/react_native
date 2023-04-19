@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
-
+import FontAwesome from "react-native-vector-icons/FontAwesome"
 const items = [
     {
         id: 1,
@@ -24,7 +24,12 @@ const items = [
         title: "Share Screen"
     },
 ]
-function MenuButtons() {
+
+
+function MenuButtons({ navigation }) {
+    const openMeeting = () => {
+        navigation.navigate("Room");
+    }
     return (
         <View style={styles.container}>
             {/*one Buttons*/}
@@ -33,13 +38,14 @@ function MenuButtons() {
                     key={index}
                     style={styles.buttonContainer}>
                     <TouchableOpacity
+                        onPress={() => openMeeting()}
                         style={{
                             ...styles.button,
                             backgroundColor: item.customColor ? item.customColor : "#0470DC"
                         }}
                     >
 
-                        <FontAwesome name={item.name} size={23} color={"efefef"} />
+                        <FontAwesome name={item.name} size={23} color={"#efefef"} />
 
                     </TouchableOpacity>
                     <Text style={styles.MenuText}>item.title</Text>
