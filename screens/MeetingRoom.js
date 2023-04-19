@@ -39,11 +39,10 @@ function MeetingRoom() {
     return (
         <View style={styles.container}>
             {startCamera ? (
-                <>
+                <SafeAreaView style={{ flex: 1 }}>
                     <Camera type={CameraType.front} style={{ width: "100%", height: 600 }} >
                     </Camera>
-                    <View>hello</View>
-                </>
+                </SafeAreaView>
 
             ) : (
 
