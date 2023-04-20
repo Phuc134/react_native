@@ -42,12 +42,20 @@ function MeetingRoom() {
     const [ModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        // const _socket = io("link-");
-        // setSocket(_socket);
-        // _socket.on("all-users", users => {
-        //     console.log("Active users");
-        //     setActiveUsers(users);
-        // })
+        const _socket = io("https://8002-203-128-241-146.ap.ngrok.io");
+        setSocket(_socket);
+        console.log(activeUsers.filter(user => (user.userName != name)));
+        _socket.on("all-users", users => {
+            {
+                console.log('day la user');
+                console.log(users);
+                setActiveUsers(users);
+
+            }
+        })
+        return () => {
+            _socket.disconnect();
+        }
     }, [])
 
     const __startCamera = async () => {
@@ -63,40 +71,57 @@ function MeetingRoom() {
 
     const joinRoom = () => {
         __startCamera();
-        //socket.emit('join-room', { roomId: roomId, userName: name });
+        socket.emit('join-room', { roomId: roomId, userName: name });
     }
-}
-return (
-    <View style={styles.container}>
-        {startCamera ? (
-            <SafeAreaView style={{ flex: 1 }}>
-                <Modal
-                    animationType='slide'
-                    transparent={false}
-                    presentationStyle={"fullScreen"}
-                    visible={ModalVisible}
-                    onRequestClose={() => {
+    return (
+        <View style={styles.container}>
+            {startCamera ? (
+                <SafeAreaView style={{ flex: 1 }}>
+                    <Modal
+                        animationType='slide'
+                        transparent={false}
+                        presentationStyle={"fullScreen"}
+                        visible={ModalVisible}
+                        onRequestClose={() => {
 
-                        /* Alert.alert("Modal has been closed. ");*/
-                        setModalVisible(!ModalVisible)
-                    }}
-                >
-                    <Chat
-                        ModalVisible={ModalVisible}
-                        setModalVisible={setModalVisible}
-                    />
-                </Modal>
-                <View style={styles.activeUsersContainer} >
-                    <View style={styles.cameraContainer}>
-                        <Camera type={CameraType.front} style={{
-                            width: activeUsers.lenght <= 1 ? "100%" : 200,
-                            height: activeUsers.lenght <= 1 ? 600 : 200
-                        }} >
-                        </Camera>
+                            /* Alert.alert("Modal has been closed. ");*/
+                            setModalVisible(!ModalVisible)
+                        }}
+                    >
+                        <Chat
+                            ModalVisible={ModalVisible}
+                            setModalVisible={setModalVisible}
+                        />
+                    </Modal>
+                    <View style={styles.activeUsersContainer} >
+                        <View style={styles.cameraContainer}>
+                            <Camera type={CameraType.front} style={{
+                                width: activeUsers.length <= 1 ? "100%" : 200,
+                                height: activeUsers.length <= 1 ? 600 : 200
+                            }} >
+                            </Camera>
+                            {activeUsers.filter(user => (user.userName != name)).map((user, index) => {
+                                return (
+                                    <View key={index} style={styles.activeUserContainer}>
+                                        <Text style={{ color: "white" }}>
+                                            {user.userName}
+                                        </Text>
+                                    </View >
+                                )
+                            })}
+                        </View>
                     </View>
-                </View>
-                <View style={styles.menu}>
-                    {menuIcons.map((icon, index) =>
+                    <View style={styles.menu}>
+                        {menuIcons.map((icon, index) =>
+                            <TouchableOpacity
+                                key={index}
+                                style={styles.tile}
+                            >
+
+                                <FontAwesome name={icon.name} size={24} color={"#efefef"} />
+                                <Text style={styles.textTile}>{icon.title}</Text>
+                            </TouchableOpacity>
+                        )}
                         <TouchableOpacity
                             onPress={() => setModalVisible(true)}
                             style={styles.tile}
@@ -105,59 +130,40 @@ return (
                             <FontAwesome name={"comment"} size={24} color={"#efefef"} />
                             <Text style={styles.textTile}>Chat</Text>
                         </TouchableOpacity>
-                    )}
-                </View >
-            </SafeAreaView>)
-            : (
-                <StartMeeting
-                    name={name}
-                    setName={setName}
-                    roomId={roomId}
-                    setRoomId={setRoomId}
-                    joinRoom={joinRoom} />
-            )}
-    </View>
-)
+                    </View >
+                </SafeAreaView>)
+                : (
+                    <StartMeeting
+                        name={name}
+                        setName={setName}
+                        roomId={roomId}
+                        setRoomId={setRoomId}
+                        joinRoom={joinRoom} />
+                )}
+        </View>
+    )
+}
+
 export default MeetingRoom;
+
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#1c1c1c",
         flex: 1,
     },
-    info: {
-        width: "100%",
-        backgroundColor: "#373538",
-        height: 50,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderColor: "#484648",
-        padding: 12,
-        justifyContent: "center"
-    },
-    textInput: {
-        color: "white",
-        fontSize: 18,
-
-    },
-    startMeetingButton: {
-        width: 350,
-        marginTop: 20,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#0470DC",
-        height: 50,
-        borderRadius: 15,
-    },
     tile: {
         justifyContent: "center",
         alignItems: "center",
-        height: 50,
-        width: 15
+        height: 100,
+        width: 50,
+        marginTop: 15,
     },
     textTile: {
         color: "white",
-        marginTop: 10
+        marginTop: 10,
+        width: "100%"
+
     },
     menu: {
         flexDirection: "row",
@@ -165,6 +171,7 @@ const styles = StyleSheet.create({
     },
     cameraContainer: {
         flex: 1,
+        height: "100%",
         backgroundColor: "black",
         justifyContent: "center",
         flexDirection: "row",
@@ -174,15 +181,14 @@ const styles = StyleSheet.create({
     },
     activeUsersContainer: {
         flex: 1,
-        width: "100",
+        width: "100%",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "black"
-
+        backgroundColor: "black",
     },
     activeUserContainer: {
-        boderColor: "gray",
         borderWidth: 1,
+        borderColor: 'white',
         height: 200,
         width: 200,
         justifyContent: "center",

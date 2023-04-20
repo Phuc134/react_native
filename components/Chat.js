@@ -10,7 +10,6 @@ function Chat({ setModalVisible }) {
                 <KeyboardAvoidingView
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                     style={{ flex: 1 }}
-
                 >
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={{ flex: 1 }}>
@@ -22,10 +21,10 @@ function Chat({ setModalVisible }) {
                             {/*Type Messages */}
                             <View style={styles.chatFormContainer}>
                                 <Text style={{ color: "white" }}>Send to: Everyone</Text>
-                                <View style={style.chatForm}>
+                                <View style={styles.chatForm}>
                                     <TextInput
                                         value={messageText}
-                                        onChange={Text => setMessageText(text)}
+                                        onChangeText={(text) => setMessageText(text)}
                                         style={styles.textInput}
                                         placeholderTextColor="#D50000"
                                         placeholder="Tap here to chat"
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
     chatFormContainer: {
         borderColor: "#2f2f2f",
         borderTopWidth: 1,
-        padding12
+        padding: 12
     },
     textInput: {
         height: 40,
@@ -77,7 +76,6 @@ const styles = StyleSheet.create({
         width: 40,
         marginTop: 12,
         marginLeft: 12,
-        backgroundColor: "#373838",
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 10
