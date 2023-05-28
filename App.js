@@ -1,13 +1,30 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginPage from './screens/LoginPage';
+import HomePage from './screens/HomePage';
+import VideoCallPage from './screens/VideoCallPage';
+const Stack = createNativeStackNavigator();
 export default function App() {
+  const [login, setLogin] = useState(false);
+  const [user, setUser] = useState(null);
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      {login ? (<Stack.Navigator initialRouteName='HomePage'>
+        <Stack.Screen name="HomePage" component={HomePage}
+          initialParams={{ setLogin, setUser, user }} />
+        <Stack.Screen name="VideoCallPage" component={VideoCallPage} />
+      </Stack.Navigator>) : (
+        <Stack.Navigator initialRouteName='LoginPage'>
+          <Stack.Screen name="LoginPage" component={LoginPage} initialParams={{ setLogin, setUser }} />
+
+        </Stack.Navigator>
+      )}
+
+    </NavigationContainer>
   );
 }
 
