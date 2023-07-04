@@ -1,5 +1,5 @@
 {
-  "name": "test1",
+  "name": "VideoChat",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.12.4",
+    "@react-native-community/cli-platform-android": "^11.3.5",
     "@react-native-firebase/app": "^17.5.0",
     "@react-native-firebase/auth": "^17.5.0",
     "@react-native-google-signin/google-signin": "^9.0.2",

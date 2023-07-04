@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "test1",
-    "slug": "test1",
+    "name": "VideoChat",
+    "slug": "VideoChat",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
