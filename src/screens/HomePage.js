@@ -40,10 +40,9 @@ function HomePage({ navigation, route }) {
         <InputForm
           labelValue={roomCode}
           onChangeText={(newValue) =>
-            setRoomCode({ ...roomCode, roomCode: newValue })
+            setRoomCode(newValue)
           }
           autoCapitalize="none"
-          keyboardType="Room code"
           autoCorrect={false}
           placeholderText="Input room code"
           iconType="people"

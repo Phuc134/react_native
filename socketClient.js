@@ -6,7 +6,7 @@ let socketInstance = null;
 export const getSocketInstance = async () => {
     if (!socketInstance) {
         //console.warn(HTTP_SOCKET);
-        socketInstance = await io('https://6a83-1-52-185-80.ap.ngrok.io');
+        socketInstance = await io('http://103.179.173.184:3000/');
     }
     return socketInstance;
 };

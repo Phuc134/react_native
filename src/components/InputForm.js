@@ -14,7 +14,7 @@ export default function InputForm({ labelValue, placeholderText, iconType, ...re
             </View>
             <TextInput
                 style={styles.input}
-                value={labelValue}
+                value={labelValue.toString()}
                 numberOfLines={1}
                 placeholder={placeholderText}
                 placeholderTextColor="#866"
