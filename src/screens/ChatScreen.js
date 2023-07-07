@@ -55,7 +55,7 @@ function Chat({ setModalVisible, sender, room, listMessage , setListMessage, mes
       </View>
     ) : (
       <View style={{ alignItems: "flex-start" }}>
-      <NodeChat sender={sender} chatContent={item.text} />
+      <NodeChat sender={item.sender} chatContent={item.text} />
     </View>
     )
   );
