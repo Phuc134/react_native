@@ -10,22 +10,24 @@ import {
   TouchableOpacity,
   Platform,
   Keyboard,
+  ImageBackground,
+  FlatList,
 } from "react-native";
 import ChatHeader from "../components/ChatHeader";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { getSocketInstance } from "../../socketClient";
+import NodeChat from "../components/NoteChat";
+import InputForm from "../components/InputForm";
 
 function Chat({ setModalVisible, sender, room }) {
   const [listMessage, setListMessage] = useState([]);
 
-  const [messageText, setMessageText] = useState();
+  const [messageText, setMessageText] = useState("");
 
   useEffect(() => {
     const testt = async () => {
       const socket = await getSocketInstance();
       socket.on("receive_message", ({ sender, messageText }) => {
-        console.log(messageText);
-        console.log("1");
         setListMessage((prevList) => [
           ...prevList,
           { sender, text: messageText },
@@ -47,6 +49,19 @@ function Chat({ setModalVisible, sender, room }) {
       console.log(e);
     }
   };
+
+  const renderChatLine = (item) => (
+    item.sender == sender ? (
+      <View style={{ alignItems: "flex-end" }}>
+        <NodeChat sender="you" chatContent={item.text} />
+      </View>
+    ) : (
+      <View style={{ alignItems: "flex-start" }}>
+      <NodeChat sender={sender} chatContent={item.text} />
+    </View>
+    )
+  );
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ height: "100%" }}>
@@ -57,45 +72,43 @@ function Chat({ setModalVisible, sender, room }) {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={{ flex: 1 }}>
               <ChatHeader setModalVisible={setModalVisible} />
-              {/*Chat Messages*/}
-              <View style={styles.chatMessages}>
-                {listMessage.map((item, index) => {
-                  return item.sender != sender ? (
-                    <>
-                      <Text style={styles.otherPeopleName}>{item.sender}:</Text>
-                      <Text style={styles.otherPeopleMessage} key={index}>
-                        {item.text}
-                      </Text>
-                    </>
-                  ) : (
-                    <Text style={styles.yourMessage}>
-                      {item.text}
-                    </Text>
-                  );
-                })}
-              </View>
-              {/*Type Messages */}
-              <View style={styles.chatFormContainer}>
-                <Text style={{ color: "white" }}>Send to: Everyone</Text>
-                <View style={styles.chatForm}>
-                  <TextInput
-                    value={messageText}
-                    onChangeText={(text) => setMessageText(text)}
-                    style={styles.textInput}
-                    placeholderTextColor="#D50000"
-                    placeholder="Tap here to chat"
+              <SafeAreaView style={styles.mainChat}>
+                <ImageBackground
+                  imageStyle={{ opacity: 0.4 }}
+                  source={require("../assets/images/background.jpg")}
+                  style={styles.imgBackground}
+                >
+                  <FlatList
+                    data={listMessage}
+                    renderItem={({ item }) => renderChatLine(item)}
+                    keyExtractor={item => item.id}
                   />
-                  <TouchableOpacity
-                    onPress={addMessage}
-                    style={{
-                      ...styles.button,
-                      backgroundColor: messageText ? "#0B71EB" : "#373838",
-                    }}
-                  >
-                    <FontAwesome name={"send"} size={18} color="#efefef" />
-                  </TouchableOpacity>
+                </ImageBackground>
+                <View style={{ flex: 1 / 10 }}>
+                  <View style={styles.chatTextboxView}>
+                    <View style={{ flex: 85 / 100 }}>
+                      <TextInput
+                        placeholder="Typing..."
+                        value={messageText}
+                        autoCapitalize="sentences"
+                        autoCorrect={false}
+                        onChangeText={(text) => setMessageText(text)}
+                      />
+                    </View>
+                    <View style={{ flex: 15 / 100 }}>
+                      <TouchableOpacity
+                        onPress={addMessage}
+                        style={{
+                          ...styles.button,
+                          backgroundColor: messageText ? "#0B71EB" : "#373838",
+                        }}
+                      >
+                        <FontAwesome name={"send"} size={18} color="#efefef" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
-              </View>
+              </SafeAreaView>
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -110,20 +123,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#1c1c1c",
   },
-  chatFormContainer: {
-    borderColor: "#2f2f2f",
-    borderTopWidth: 1,
-    padding: 12,
+  chatTextboxView: {
+    flexDirection: "row",
+    backgroundColor: "#FFF",
+    width: "100%",
+    height: "100%",
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingLeft: 5,
   },
-  textInput: {
-    height: 40,
-    color: "#efefef",
-    borderColor: "#595859",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 12,
+  imgBackground: {
     flex: 1,
+    backgroundColor: "#f2f2f2",
+    flexDirection: "column",
+    justifyContent: "center",
   },
   chatForm: {
     flexDirection: "row",
@@ -131,42 +144,14 @@ const styles = StyleSheet.create({
   button: {
     height: 40,
     width: 40,
-    marginTop: 12,
-    marginLeft: 12,
+    marginLeft: 10,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
   },
-  chatMessages: {
+  mainChat: {
     flex: 1,
-  },
-  yourMessage: {
-    backgroundColor: "#0975D4",
-    width: "auto",
-    marginTop: 5,
-    marginBottom: 10,
-    marginRight: 10,
-    marginLeft: 100,
-    borderRadius: 10,
-    padding: 10,
-    color: "#fff",
-    alignSelf: "flex-end",
-  },
-  otherPeopleName: {
-    color: "white",
-    marginLeft: 10,
-    marginTop: 10,
-  },
-  otherPeopleMessage: {
-    backgroundColor: "#868686",
-    marginVertical: 5,
-    marginRight: 100,
-    marginLeft: 10,
-    borderRadius: 10,
-    padding: 10,
-    color: "#fff",
-    textAlign: "left",
-    alignSelf: "flex-start",
-    float: "left",
+    flexDirection: "column",
+    justifyContent: "flex-end",
   },
 });

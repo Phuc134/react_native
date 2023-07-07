@@ -1,3 +1,4 @@
+import { green } from '@material-ui/core/colors'
 import React from 'react'
 import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native'
 import Entypo from "react-native-vector-icons/Entypo"
@@ -24,7 +25,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         paddingVertical: 20,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        backgroundColor: "#06F"
     },
     heading: {
         color: "white",
