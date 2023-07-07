@@ -11,6 +11,9 @@ import { getSocketInstance } from '../../socketClient';
 export default function VideoCallPage({ route, navigation }) {
     const { roomCode, user } = route.params;
     const [ModalVisible, setModalVisible] = useState(false);
+    const [listMessage, setListMessage] = useState([]);
+
+    const [messageText, setMessageText] = useState("");
     return (
         <View style={styles.container}>
             <Modal
@@ -24,6 +27,10 @@ export default function VideoCallPage({ route, navigation }) {
                 }}
             >
                 <Chat
+                listMessage={listMessage}
+                setListMessage={setListMessage}
+                messageText={messageText}
+                setMessageText={setMessageText}
                     room={roomCode}
                     sender={user.user.name}
                     ModalVisible={ModalVisible}
@@ -37,7 +44,11 @@ export default function VideoCallPage({ route, navigation }) {
                 userName={user.user.name}
                 conferenceID={roomCode} // conferenceID can be any unique string. 
                 config={{
-                    onLeave: () => { navigation.navigate('HomePage') },
+                    onLeave: async () => {
+                         navigation.navigate('HomePage');
+                         const socket = await getSocketInstance();
+                         socket.emit("leave_room", ({user, room: roomCode}))
+                     },
                     bottomMenuBarConfig: {
                         maxCount: 5,
                         buttons: [

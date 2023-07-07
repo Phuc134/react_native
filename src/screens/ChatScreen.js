@@ -19,10 +19,8 @@ import { getSocketInstance } from "../../socketClient";
 import NodeChat from "../components/NoteChat";
 import InputForm from "../components/InputForm";
 
-function Chat({ setModalVisible, sender, room }) {
-  const [listMessage, setListMessage] = useState([]);
+function Chat({ setModalVisible, sender, room, listMessage , setListMessage, messageText, setMessageText}) {
 
-  const [messageText, setMessageText] = useState("");
 
   useEffect(() => {
     const testt = async () => {
