@@ -3,6 +3,7 @@ import { View, Text, SafeAreaView, Image } from "react-native";
 import InputForm from "../components/InputForm";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import ButtonForm from "../components/ButtonForm";
+import { getSocketInstance } from "../../socketClient";
 
 function HomePage({ navigation, route }) {
   const [roomCode, setRoomCode] = useState("");
@@ -22,15 +23,6 @@ function HomePage({ navigation, route }) {
     setUser(user);
   };
   return (
-    // <View style={styles.container}>
-    //     <Text style={styles.userName}>Username: </Text>
-    //     <TextInput style={styles.input} value={userName} onChangeText={newValue => setUsername(newValue)} />
-    //     <Button onPress={() => navigation.navigate('VideoCallPage', {
-    //         userName, user
-    //     })} title="Join Call" />
-    //     <Button onPress={signOut} title="Sign out" />
-
-    // </View>
     <SafeAreaView style={styles.container}>
       <Image
         style={styles.logo}
@@ -39,9 +31,7 @@ function HomePage({ navigation, route }) {
       <View style={styles.wrapper}>
         <InputForm
           labelValue={roomCode}
-          onChangeText={(newValue) =>
-            setRoomCode(newValue)
-          }
+          onChangeText={(newValue) => setRoomCode(newValue)}
           autoCapitalize="none"
           autoCorrect={false}
           placeholderText="Input room code"
@@ -49,11 +39,14 @@ function HomePage({ navigation, route }) {
         />
         <ButtonForm
           buttonTitle="Join call"
-          onPress={() =>
-            navigation.navigate("VideoCallPage", {
-              roomCode,
-              user,
-            })
+          onPress={async() =>
+            {
+              const socket = await getSocketInstance();
+              navigation.navigate("VideoCallPage", {
+                roomCode,
+                user: user,
+              })
+            }
           }
         />
         <ButtonForm buttonTitle="Sign out" onPress={signOut} />

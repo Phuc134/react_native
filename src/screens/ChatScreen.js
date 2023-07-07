@@ -19,9 +19,15 @@ import { getSocketInstance } from "../../socketClient";
 import NodeChat from "../components/NoteChat";
 import InputForm from "../components/InputForm";
 
-function Chat({ setModalVisible, sender, room, listMessage , setListMessage, messageText, setMessageText}) {
-
-
+function Chat({
+  setModalVisible,
+  sender,
+  room,
+  listMessage,
+  setListMessage,
+  messageText,
+  setMessageText,
+}) {
   useEffect(() => {
     const testt = async () => {
       const socket = await getSocketInstance();
@@ -48,17 +54,18 @@ function Chat({ setModalVisible, sender, room, listMessage , setListMessage, mes
     }
   };
 
-  const renderChatLine = (item) => (
+  const yourRef = useRef(null);
+
+  const renderChatLine = (item) =>
     item.sender == sender ? (
       <View style={{ alignItems: "flex-end" }}>
         <NodeChat sender="you" chatContent={item.text} />
       </View>
     ) : (
       <View style={{ alignItems: "flex-start" }}>
-      <NodeChat sender={sender} chatContent={item.text} />
-    </View>
-    )
-  );
+        <NodeChat sender={item.sender} chatContent={item.text} />
+      </View>
+    );
 
   return (
     <View style={styles.container}>
@@ -79,7 +86,10 @@ function Chat({ setModalVisible, sender, room, listMessage , setListMessage, mes
                   <FlatList
                     data={listMessage}
                     renderItem={({ item }) => renderChatLine(item)}
-                    keyExtractor={item => item.id}
+                    keyExtractor={(item) => item.id}
+                    onContentSizeChange={() => yourRef.current.scrollToEnd()}
+                    onLayout={() => yourRef.current.scrollToEnd()}
+                    ref={yourRef}
                   />
                 </ImageBackground>
                 <View style={{ flex: 1 / 10 }}>
