@@ -1,9 +1,37 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { KeyboardAvoidingView, View, Text, StyleSheet, TextInput, SafeAreaView, TouchableWithoutFeedback, TouchableOpacity, Platform, Keyboard } from 'react-native'
 import ChatHeader from './ChatHeader'
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-function Chat({ setModalVisible }) {
-    const [messageText, setMessageText] = useState()
+import { getSocketInstance } from '../socketClient';
+
+function Chat({ setModalVisible, sender, room }) {
+    const [listMessage, setListMessage] = useState([]);
+
+    const [messageText, setMessageText] = useState();
+
+    useEffect(() => {
+        const testt = async () => {
+            const socket = await getSocketInstance();
+            socket.on("receive_message", ({ sender, messageText }) => {
+                console.log(messageText);
+                console.log('1');
+                setListMessage(prevList => [...prevList, { sender, text: messageText }]);
+            });
+
+        };
+        testt();
+    }, [])
+    const addMessage = async () => {
+        try {
+            setMessageText("");
+            const socket = await getSocketInstance();
+            socket.emit("send_message", { room, sender, messageText });
+            setListMessage(prevList => [...prevList, { sender, text: messageText }]);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
     return (
         <View style={styles.container}>
             <SafeAreaView style={{ height: "100%" }}>
@@ -16,7 +44,11 @@ function Chat({ setModalVisible }) {
                             <ChatHeader setModalVisible={setModalVisible} />
                             {/*Chat Messages*/}
                             <View style={styles.chatMessages}>
-
+                                {listMessage.map((item, index) => {
+                                    return (
+                                        <Text style={{ color: "white" }} key={index}>{item.sender} : {item.text}</Text>
+                                    )
+                                })}
                             </View>
                             {/*Type Messages */}
                             <View style={styles.chatFormContainer}>
@@ -29,7 +61,7 @@ function Chat({ setModalVisible }) {
                                         placeholderTextColor="#D50000"
                                         placeholder="Tap here to chat"
                                     />
-                                    <TouchableOpacity style={{
+                                    <TouchableOpacity onPress={addMessage} style={{
                                         ...styles.button,
                                         backgroundColor: messageText ? "#0B71EB" : "#373838",
                                     }}>
